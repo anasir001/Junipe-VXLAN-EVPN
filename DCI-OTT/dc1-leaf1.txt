@@ -1,0 +1,212 @@
+version 23.1R1.8;
+system {
+    root-authentication {
+        encrypted-password "$6$qyzLX4C9$0x9O3Mj0K7gJC3HxUe/SjIQs/5.lwQ24ZNwpWDF1a2uBoD5R/mtNQhpBrxys0G0TIxwFC0ms8Kb0isaUonbj/1"; ## SECRET-DATA
+    }
+    arp {
+        aging-timer 5;
+    }
+    syslog {
+        file interactive-commands {
+            interactive-commands any;
+        }
+        file messages {
+            any notice;
+            authorization info;
+        }
+    }
+    processes {
+        dhcp-service {
+            traceoptions {
+                file dhcp_logfile size 10m;
+                level all;              
+                flag packet;            
+            }                           
+        }                               
+    }                                   
+}                                       
+chassis {                               
+    aggregated-devices {                
+        ethernet {                      
+            device-count 1;             
+        }                               
+    }                                   
+}                                       
+interfaces {                            
+    ge-0/0/1 {                          
+        mtu 9192;                       
+        unit 0 {                        
+            family inet {               
+                mtu 9170;               
+                address 172.16.1.1/31;  
+            }                           
+        }                               
+    }                                   
+    ge-0/0/2 {                          
+        mtu 9192;                       
+        unit 0 {                        
+            family inet {               
+                mtu 9170;               
+                address 172.16.1.5/31;  
+            }                           
+        }                               
+    }                                   
+    ge-0/0/3 {                          
+        ether-options {                 
+            802.3ad ae1;                
+        }                               
+    }                                   
+    ge-0/0/4 {                          
+        unit 0 {                        
+            family ethernet-switching { 
+                vlan {                  
+                    members v100;       
+                }                       
+            }                           
+        }                               
+    }                                   
+    ae1 {                               
+        mtu 9192;                       
+        esi {                           
+            00:00:00:00:22:22:00:00:00:00;
+            all-active;                 
+        }                               
+        aggregated-ether-options {      
+            lacp {                      
+                active;                 
+                system-id 00:00:00:00:00:22;
+            }                           
+        }                               
+        unit 0 {                        
+            family ethernet-switching { 
+                vlan {                  
+                    members v100;       
+                }                       
+            }                           
+        }                               
+    }                                   
+    fxp0 {                              
+        unit 0 {                        
+            family inet {               
+                dhcp {                  
+                    vendor-id Juniper-ex9214-VM69F8D1D18E;
+                }                       
+            }                           
+            family inet6 {              
+                dhcpv6-client {         
+                    client-type stateful;
+                    client-ia-type ia-na;
+                    client-identifier duid-type duid-ll;
+                    vendor-id Juniper:ex9214:VM69F8D1D18E;
+                }                       
+            }                           
+        }                               
+    }                                   
+    lo0 {                               
+        unit 0 {                        
+            family inet {               
+                address 192.168.101.11/32;
+            }                           
+        }                               
+    }                                   
+}                                       
+multi-chassis {                         
+    mc-lag {                            
+        consistency-check;              
+    }                                   
+}                                       
+policy-options {                        
+    policy-statement Export-to-BGP {    
+        term 1 {                        
+            from interface lo0.0;       
+            then accept;                
+        }                               
+    }                                   
+    policy-statement Load-Balance {     
+        term 1 {                        
+            then {                      
+                load-balance per-flow;  
+                accept;                 
+            }                           
+        }                               
+    }                                   
+}                                       
+routing-instances {                     
+    macvrf-v100-1 {                     
+        instance-type mac-vrf;          
+        protocols {                     
+            evpn {                      
+                encapsulation vxlan;    
+                extended-vni-list 10100;
+            }                           
+        }                               
+        vtep-source-interface lo0.0;    
+        service-type vlan-based;        
+        interface ge-0/0/4.0;           
+        interface ae1.0;                
+        route-distinguisher 192.168.101.11:100;
+        vrf-target target:1:1;          
+        vlans {                         
+            v100 {                      
+                vlan-id 100;            
+                ##                      
+                ## Warning: requires 'vxlan' license
+                ##                      
+                vxlan {                 
+                    vni 10100;          
+                }                       
+            }                           
+        }                               
+    }                                   
+}                                       
+routing-options {                       
+    router-id 192.168.101.11;           
+    autonomous-system 65111;            
+    forwarding-table {                  
+        export Load-Balance;            
+    }                                   
+}                                       
+protocols {                             
+    router-advertisement {              
+        interface fxp0.0 {              
+            managed-configuration;      
+        }                               
+    }                                   
+    ##                                  
+    ## Warning: requires 'bgp' license  
+    ##                                  
+    bgp {                               
+        group underlay {                
+            type external;              
+            export Export-to-BGP;       
+            multipath;                  
+            neighbor 172.16.1.0 {       
+                peer-as 65101;          
+            }                           
+            neighbor 172.16.1.4 {       
+                peer-as 65101;          
+            }                           
+        }                               
+        group overlay {                 
+            type external;              
+            multihop;                   
+            local-address 192.168.101.11;
+            family evpn {               
+                signaling;              
+            }                           
+            multipath;                  
+            neighbor 192.168.101.1 {    
+                peer-as 65101;          
+            }                           
+            neighbor 192.168.101.2 {    
+                peer-as 65101;          
+            }                           
+        }                               
+    }                                   
+    lldp {                              
+        interface all;                  
+    }                                   
+    lldp-med {                          
+        interface all;                  
+    }                                   
+}                          

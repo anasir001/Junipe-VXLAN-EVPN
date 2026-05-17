@@ -1,0 +1,188 @@
+version 23.1R1.8;
+system {
+    root-authentication {
+        encrypted-password "$6$qyzLX4C9$0x9O3Mj0K7gJC3HxUe/SjIQs/5.lwQ24ZNwpWDF1a2uBoD5R/mtNQhpBrxys0G0TIxwFC0ms8Kb0isaUonbj/1"; ## SECRET-DATA
+    }
+    arp {
+        aging-timer 5;
+    }
+    syslog {
+        file interactive-commands {
+            interactive-commands any;
+        }
+        file messages {
+            any notice;
+            authorization info;
+        }
+    }
+    processes {
+        dhcp-service {
+            traceoptions {
+                file dhcp_logfile size 10m;
+                level all;              
+                flag packet;            
+            }                           
+        }                               
+    }                                   
+}                                       
+interfaces {                            
+    ge-0/0/1 {                          
+        mtu 9192;                       
+        unit 0 {                        
+            family inet {               
+                mtu 9170;               
+                address 172.16.2.0/31;  
+            }                           
+        }                               
+    }                                   
+    ge-0/0/2 {                          
+        mtu 9192;                       
+        unit 0 {                        
+            family inet {               
+                mtu 9170;               
+                address 172.16.2.2/31;  
+            }                           
+        }                               
+    }                                   
+    ge-0/0/5 {                          
+        mtu 9192;                       
+        unit 0 {                        
+            family inet {               
+                mtu 9170;               
+                address 172.16.2.8/31;  
+            }                           
+        }                               
+    }                                   
+    fxp0 {                              
+        unit 0 {                        
+            family inet {               
+                dhcp {                  
+                    vendor-id Juniper-ex9214-VM69F8CDE4F8;
+                }                       
+            }                           
+            family inet6 {              
+                dhcpv6-client {         
+                    client-type stateful;
+                    client-ia-type ia-na;
+                    client-identifier duid-type duid-ll;
+                    vendor-id Juniper:ex9214:VM69F8CDE4F8;
+                }                       
+            }                           
+        }                               
+    }                                   
+    lo0 {                               
+        unit 0 {                        
+            family inet {               
+                address 192.168.201.1/32;
+            }                           
+        }                               
+    }                                   
+}                                       
+multi-chassis {                         
+    mc-lag {                            
+        consistency-check;              
+    }                                   
+}                                       
+policy-options {                        
+    policy-statement Export-to-BGP {    
+        term 1 {                        
+            from interface lo0.0;       
+            then accept;                
+        }                               
+    }                                   
+    policy-statement Load-Balance {     
+        term 1 {                        
+            then {                      
+                load-balance per-flow;  
+                accept;                 
+            }                           
+        }                               
+    }                                   
+    policy-statement export-to-dci {    
+        term 1 {                        
+            from {                      
+                route-filter 192.168.201.0/24 orlonger;
+            }                           
+            then accept;                
+        }                               
+        term 2 {                        
+            then reject;                
+        }                               
+    }                                   
+}                                       
+routing-options {                       
+    router-id 192.168.201.1;            
+    autonomous-system 65201;            
+    forwarding-table {                  
+        export Load-Balance;            
+    }                                   
+}                                       
+protocols {                             
+    router-advertisement {              
+        interface fxp0.0 {              
+            managed-configuration;      
+        }                               
+    }                                   
+    ##                                  
+    ## Warning: requires 'bgp' license  
+    ##                                  
+    bgp {                               
+        group underlay {                
+            type external;              
+            export Export-to-BGP;       
+            multipath;                  
+            neighbor 172.16.2.1 {       
+                peer-as 65211;          
+            }                           
+            neighbor 172.16.2.3 {       
+                peer-as 65212;          
+            }                           
+        }                               
+        group overlay {                 
+            type external;              
+            multihop {                  
+                no-nexthop-change;      
+            }                           
+            local-address 192.168.201.1;
+            family evpn {               
+                signaling;              
+            }                           
+            multipath;                  
+            neighbor 192.168.201.11 {   
+                peer-as 65211;          
+            }                           
+            neighbor 192.168.201.12 {   
+                peer-as 65212;          
+            }                           
+        }                               
+        group underlay-dci {            
+            type external;              
+            family inet {               
+                unicast;                
+            }                           
+            export export-to-dci;       
+            neighbor 172.16.2.9 {       
+                peer-as 65100;          
+            }                           
+        }                               
+        group unerlay-dci {             
+            type external;              
+            multihop {                  
+                no-nexthop-change;      
+            }                           
+            local-address 192.168.201.1;
+            family evpn {               
+                signaling;              
+            }                           
+            neighbor 192.168.101.250 {  
+                peer-as 65100;          
+            }                           
+        }                               
+    }                                   
+    lldp {                              
+        interface all;                  
+    }                                   
+    lldp-med {                          
+        interface all;                  
+    }                                   
+}                         

@@ -1,0 +1,351 @@
+version 25.4R1.13-EVOI20251216022751-evo-builder-1;
+system {
+    root-authentication {
+        encrypted-password "$6$qyzLX4C9$0x9O3Mj0K7gJC3HxUe/SjIQs/5.lwQ24ZNwpWDF1a2uBoD5R/mtNQhpBrxys0G0TIxwFC0ms8Kb0isaUonbj/1"; ## SECRET-DATA
+    }
+    syslog {
+        file interactive-commands {
+            interactive-commands any;
+        }
+        file messages {
+            any notice;
+            authorization info;
+        }
+    }
+    processes {
+        nlsd enable;
+    }
+}
+security {
+    pki {
+        ca-profile ISRG_Root_X1 {
+            ca-identity ISRG_Root_X1;   
+            pre-load;                   
+        }                               
+        ca-profile Lets_Encrypt {       
+            ca-identity Lets_Encrypt;   
+            enrollment {                
+                url https://acme-v02.api.letsencrypt.org/directory;
+            }                           
+        }                               
+    }                                   
+}                                       
+interfaces {                            
+    et-0/0/0:0 {                        
+        unit 0 {                        
+            family inet;                
+            family inet6;               
+        }                               
+    }                                   
+    et-0/0/0:1 {                        
+        unit 0 {                        
+            family inet;                
+            family inet6;               
+        }                               
+    }                                   
+    et-0/0/0:2 {                        
+        unit 0 {                        
+            family inet;                
+            family inet6;               
+        }                               
+    }                                   
+    et-0/0/0:3 {                        
+        unit 0 {                        
+            family inet;                
+            family inet6;               
+        }                               
+    }                                   
+    et-0/0/1 {                          
+        unit 0 {                        
+            family inet {               
+                address 172.16.1.9/31;  
+            }                           
+        }                               
+    }                                   
+    et-0/0/1:0 {                        
+        unit 0 {                        
+            family inet;                
+            family inet6;               
+        }                               
+    }                                   
+    et-0/0/1:1 {                        
+        unit 0 {                        
+            family inet;                
+            family inet6;               
+        }                               
+    }                                   
+    et-0/0/1:2 {                        
+        unit 0 {                        
+            family inet;                
+            family inet6;               
+        }                               
+    }                                   
+    et-0/0/1:3 {                        
+        unit 0 {                        
+            family inet;                
+            family inet6;               
+        }                               
+    }                                   
+    et-0/0/2 {                          
+        unit 0 {                        
+            family inet {               
+                address 172.16.1.11/31; 
+            }                           
+        }                               
+    }                                   
+    et-0/0/2:0 {                        
+        unit 0 {                        
+            family inet;                
+            family inet6;               
+        }                               
+    }                                   
+    et-0/0/2:1 {                        
+        unit 0 {                        
+            family inet;                
+            family inet6;               
+        }                               
+    }                                   
+    et-0/0/2:2 {                        
+        unit 0 {                        
+            family inet;                
+            family inet6;               
+        }                               
+    }                                   
+    et-0/0/2:3 {                        
+        unit 0 {                        
+            family inet;                
+            family inet6;               
+        }                               
+    }                                   
+    et-0/0/3 {                          
+        unit 0 {                        
+            family inet {               
+                address 172.16.2.9/31;  
+            }                           
+        }                               
+    }                                   
+    et-0/0/3:0 {                        
+        unit 0 {                        
+            family inet;                
+            family inet6;               
+        }                               
+    }                                   
+    et-0/0/3:1 {                        
+        unit 0 {                        
+            family inet;                
+            family inet6;               
+        }                               
+    }                                   
+    et-0/0/3:2 {                        
+        unit 0 {                        
+            family inet;                
+            family inet6;               
+        }                               
+    }                                   
+    et-0/0/3:3 {                        
+        unit 0 {                        
+            family inet;                
+            family inet6;               
+        }                               
+    }                                   
+    et-0/0/4 {                          
+        unit 0 {                        
+            family inet {               
+                address 172.16.2.11/31; 
+            }                           
+            family inet6;               
+        }                               
+    }                                   
+    et-0/0/5 {                          
+        unit 0 {                        
+            family inet;                
+            family inet6;               
+        }                               
+    }                                   
+    et-0/0/6 {                          
+        unit 0 {                        
+            family inet;                
+            family inet6;               
+        }                               
+    }                                   
+    et-0/0/7 {                          
+        unit 0 {                        
+            family inet;                
+            family inet6;               
+        }                               
+    }                                   
+    et-0/0/8:0 {                        
+        unit 0 {                        
+            family inet;                
+            family inet6;               
+        }                               
+    }                                   
+    et-0/0/8:1 {                        
+        unit 0 {                        
+            family inet;                
+            family inet6;               
+        }                               
+    }                                   
+    et-0/0/8:2 {                        
+        unit 0 {                        
+            family inet;                
+            family inet6;               
+        }                               
+    }                                   
+    et-0/0/8:3 {                        
+        unit 0 {                        
+            family inet;                
+            family inet6;               
+        }                               
+    }                                   
+    et-0/0/9:0 {                        
+        unit 0 {                        
+            family inet;                
+            family inet6;               
+        }                               
+    }                                   
+    et-0/0/9:1 {                        
+        unit 0 {                        
+            family inet;                
+            family inet6;               
+        }                               
+    }                                   
+    et-0/0/9:2 {                        
+        unit 0 {                        
+            family inet;                
+            family inet6;               
+        }                               
+    }                                   
+    et-0/0/9:3 {                        
+        unit 0 {                        
+            family inet;                
+            family inet6;               
+        }                               
+    }                                   
+    et-0/0/10:0 {                       
+        unit 0 {                        
+            family inet;                
+            family inet6;               
+        }                               
+    }                                   
+    et-0/0/10:1 {                       
+        unit 0 {                        
+            family inet;                
+            family inet6;               
+        }                               
+    }                                   
+    et-0/0/10:2 {                       
+        unit 0 {                        
+            family inet;                
+            family inet6;               
+        }                               
+    }                                   
+    et-0/0/10:3 {                       
+        unit 0 {                        
+            family inet;                
+            family inet6;               
+        }                               
+    }                                   
+    et-0/0/11:0 {                       
+        unit 0 {                        
+            family inet;                
+            family inet6;               
+        }                               
+    }                                   
+    et-0/0/11:1 {                       
+        unit 0 {                        
+            family inet;                
+            family inet6;               
+        }                               
+    }                                   
+    et-0/0/11:2 {                       
+        unit 0 {                        
+            family inet;                
+            family inet6;               
+        }                               
+    }                                   
+    et-0/0/11:3 {                       
+        unit 0 {                        
+            family inet;                
+            family inet6;               
+        }                               
+    }                                   
+    lo0 {                               
+        unit 0 {                        
+            family inet {               
+                address 192.168.101.250/32;
+            }                           
+        }                               
+    }                                   
+}                                       
+policy-options {                        
+    policy-statement Export-to-BGP {    
+        term 1 {                        
+            from interface lo0.0;       
+            then accept;                
+        }                               
+    }                                   
+    policy-statement Load-Balance {     
+        term 1 {                        
+            then {                      
+                load-balance per-flow;  
+            }                           
+        }                               
+    }                                   
+}                                       
+routing-options {                       
+    router-id 192.168.101.250;          
+    autonomous-system 65100;            
+    forwarding-table {                  
+        export Load-Balance;            
+    }                                   
+}                                       
+protocols {                             
+    bgp {                               
+        group underlay-dci {            
+            type external;              
+            family inet {               
+                unicast;                
+            }                           
+            export Export-to-BGP;       
+            neighbor 172.16.1.8 {       
+                peer-as 65101;          
+            }                           
+            neighbor 172.16.1.10 {      
+                peer-as 65101;          
+            }                           
+            neighbor 172.16.2.8 {       
+                peer-as 65201;          
+            }                           
+            neighbor 172.16.2.10 {      
+                peer-as 65201;          
+            }                           
+        }                               
+        group overlay-dci {             
+            type external;              
+            multihop {                  
+                no-nexthop-change;      
+            }                           
+            local-address 192.168.101.250;
+            family evpn {               
+                signaling;              
+            }                           
+            neighbor 192.168.101.1 {    
+                peer-as 65101;          
+            }                           
+            neighbor 192.168.101.2 {    
+                peer-as 65101;          
+            }                           
+            neighbor 192.168.201.1 {    
+                peer-as 65201;          
+            }                           
+            neighbor 192.168.201.2 {    
+                peer-as 65201;          
+            }                           
+        }                               
+    }                                   
+    lldp {                              
+        port-id-subtype interface-name; 
+        interface all;                  
+    }                                   
+}                           

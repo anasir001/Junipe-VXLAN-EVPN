@@ -1,0 +1,20 @@
+# VXLAN EVPN Juniper DCI Over-the-Top (OTT) Lab
+
+This repository contains configuration files for a VXLAN EVPN Data Center Interconnect (DCI) Over-the-Top lab scenario built on Juniper vEX platforms.
+
+## Lab Environment
+
+---------------------------------------------------------------
+| Component       | Platform / Version                        |
+|-----------------|-------------------------------------------|
+| Simulator       | EVE-NG Community Edition — Bare Metal     |
+| Leaf / Spine    | Juniper vEX — 23.1R1.8                    |
+| Core Router     | Juniper EVO Router — 25.4R1.13-EVO        |
+| Host            | Linux — Debian 10.3.0                     |
+---------------------------------------------------------------
+
+## Author
+
+Abdul — Network Engineer
+Linkedin: https://www.linkedin.com/in/anasir1/
+Github: https://github.com/anasir001

@@ -1,0 +1,9 @@
+🏗️ What I built: Two full Datacenter fabrics (Datacenter-01 and Datacenter-02), each with a two-tier spine-leaf topology where every device — spines and leaves — is fully EVPN and VXLAN enabled. Both DCs connect through a Core router. Each fabric has 2 spines acting as EVPN route reflectors and 2 leaves acting as VTEPs, with Linux hosts attached at the edge. 
+
+⚙️ Method used — OTT (Over-The-Top): I configured a single VXLAN ID mapped to a VLAN under mac-vrf on each leaf. The Core router runs eBGP with both DCs and advertises VTEP loopback IPs across the DCI link — this is what allows VTEPs in DC1 and DC2 to resolve each other's addresses and establish VXLAN tunnels across the transport. EVPN is enabled on the Core to carry overlay reachability between the two fabrics. OTT is called "over-the-top" because the VXLAN overlay rides on top of the existing routed underlay — but make no mistake, the Core still plays an active role as the DCI stitching point. 
+
+✅ Result: h1 (DC1) successfully pinged h5 (DC2) — end-to-end Layer 2 reachability across two datacenters confirmed. 
+
+⚠️ Why OTT isn't always the answer: Despite its relatively simple deployment, OTT creates a full mesh of VXLAN tunnels between all VTEP pairs across both DCs — and that mesh grows as O(n²). In a large-scale environment with hundreds of VTEPs, this becomes a scalability and operational challenge. That's why production DCI deployments often move toward: → EVPN-signaled DCI with dedicated DCI gateways → Hierarchical EVPN with inter-DC route filtering → Gateway-based designs to limit domain flooding 
+
+📌 Key takeaway: OTT is a great starting point to understand DCI fundamentals, but architectural discipline matters as you scale. Building these labs in EVE-NG is one of the best ways I've found to deeply understand why design choices exist — not just how to configure them.

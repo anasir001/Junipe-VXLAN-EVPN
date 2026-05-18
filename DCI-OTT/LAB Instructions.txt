@@ -15,6 +15,6 @@ This repository contains configuration files for a VXLAN EVPN Data Center Interc
 
 ## Author
 
-Abdul — Network Engineer
-Linkedin: https://www.linkedin.com/in/anasir1/
+Abdul Nasir — Network Engineer
+LinkedIn: https://www.linkedin.com/in/anasir1/
 Github: https://github.com/anasir001
